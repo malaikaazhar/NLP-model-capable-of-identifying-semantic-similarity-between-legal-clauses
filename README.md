@@ -1,53 +1,50 @@
-Legal Clause Similarity using Siamese Neural Networks
-1. Network Details
 
-This project uses two Siamese neural network architectures for clause similarity detection:
-BiLSTM-based and Attention-based encoders. Both networks share a common structure with two identical subnetworks that generate embeddings for clause pairs and a final dense layer that computes similarity.
+# Clause Similarity Classification
 
+This repository contains code for building a clause similarity classification model using TensorFlow/Keras. The workflow includes:
 
-• Embedding Dimension: 128
-• LSTM Hidden Dimension: 64
-• Dropout Rate: 0.3
-• Vocabulary Size: 30,000 (TextVectorization layer)
-• Sequence Length: 128 tokens
-• Optimizer: Adam (learning rate = 0.001)
-• Loss Function: Binary Crossentropy
-• Activation Function (Output): Sigmoid
-• Epochs: 5
-• Early Stopping: patience = 2 (based on validation accuracy)
+## 📁 Dataset Loading
+- Downloads dataset from Kaggle using `kagglehub`.
+- Reads multiple CSV files containing legal/contractual clauses.
+- Combines them into a unified DataFrame.
 
-2. Dataset Splits
+## 🧹 Preprocessing
+- Cleans text using custom preprocessing:
+  - Lowercasing
+  - Removing special characters
+  - Normalizing whitespace
+- Generates positive and negative clause pairs for training:
+  - Positive pairs: clauses with the same label.
+  - Negative pairs: clauses with different labels.
 
-The dataset was built by combining multiple clause files, containing 'clause_text' and 'clause_type' columns.
-Pairs were generated as follows:
-- Positive pairs: Clauses of the same type (label = 1)
-- Negative pairs: Clauses of different types (label = 0)
+## 🧪 Feature Engineering
+- Vectorizes text using `TextVectorization`.
+- Converts clause pairs into numerical sequences.
+- Prepares inputs: `A` (clause1), `B` (clause2), and labels `y`.
 
+## 🧠 Model Architecture
+- Twin-tower (Siamese) LSTM-like design using:
+  - Embedding layers
+  - Bidirectional LSTMs
+  - Dense layers
+- Combines encoded clause vectors using absolute difference.
+- Final output: binary similarity (0 = not similar, 1 = similar).
 
-The dataset was split into:
-• 70% Training set
-• 15% Validation set
-• 15% Test set
+## 🔧 Training
+- Uses binary cross-entropy loss.
+- Includes callbacks:
+  - EarlyStopping
+- Evaluates model using accuracy and loss.
 
+## 📊 Outputs
+- Prints dataset shapes.
+- Displays sample clause pairs.
+- Shows training logs and results.
 
-3. Performance Measures
-
-Both models were evaluated using multiple classification metrics:
-• Accuracy – overall correctness of classification
-• Precision – proportion of correctly predicted similar clauses
-• Recall – proportion of actual similar clauses identified
-• F1-Score – harmonic mean of precision and recall
-• ROC-AUC & PR-AUC – measure the ability to rank pairs correctly
-
-
-Model	Accuracy	Precision	Recall	F1-Score	ROC-AUC	PR-AUC
-BiLSTM Siamese	0.873	0.868	0.871	0.870	0.905	0.898
-Attention Siamese	0.856	0.852	0.854	0.853	0.892	0.884
-4. Performance Comparison
-
-The BiLSTM Siamese model achieved slightly better performance than the Attention Siamese model in terms of accuracy and F1-score.
-The Attention model, however, trained faster and demonstrated smoother convergence.
-
-Overall, both architectures perform competitively, with BiLSTM showing marginally higher classification capability,
-while the Attention model offers computational efficiency.
-
+## ▶️ How to Run
+1. Install dependencies:
+   ```bash
+   pip install tensorflow numpy pandas kagglehub scikit-learn
+   ```
+2. Place the notebook in your working environment.
+3. Run all cells sequentially.
